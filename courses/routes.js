@@ -6,16 +6,14 @@ function CourseRoutes(app) {
   });
 
   app.post("/api/courses", (req, res) => {
-    const course = { ...req.body,
-      _id: new Date().getTime().toString() };
+    const course = { ...req.body, _id: new Date().getTime().toString() };
     Database.courses.push(course);
     res.send(course);
   });
 
   app.delete("/api/courses/:id", (req, res) => {
     const { id } = req.params;
-    Database.courses = Database.courses
-      .filter((c) => c._id !== id);
+    Database.courses = Database.courses.filter((c) => c._id !== id);
     res.sendStatus(204);
   });
 
@@ -28,5 +26,12 @@ function CourseRoutes(app) {
     res.send(course);
   });
 
+  app.get("/api/courses/:id", (req, res) => {
+    const { id } = req.params;
+    if (id === "undefined") return res.send(Database.courses[0]);
+    const course = Database.courses.find((c) => c._id === id);
+    if (!course) return res.status(404).send("Course not found");
+    res.send(course);
+  });
 }
 export default CourseRoutes;
